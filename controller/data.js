@@ -5,12 +5,12 @@ const model = require("../model/model");
 const appConfig = require("../config/app");
 
 
-router.get("/banner",async function(req,res){
+router.get("/banner",helper.cekToken(),async function(req,res){
     let data = await model.getRowsQuery(`SELECT id,jenis,banner FROM banner`);
     res.json({status:true,message:"berhasil",data});
 });
 
-router.get("/saldo",async function(req,res){
+router.get("/saldo",helper.cekToken(),async function(req,res){
     let id_user = 'anonim';
     let data = await model.getRowQuery(`
         SELECT a.masuk - b.keluar AS saldo FROM (

@@ -2,6 +2,23 @@ let bcrypt = require("bcryptjs");
 let JWT = require("jsonwebtoken");
 let appConfig = require("../config/app");
 
+exports.cekToken = ()=>{
+    return function(req,res,next){
+        var token = req.headers['x-access-token'];
+        if (token){
+            JWT.verify(token,appConfig.jwtSecret,async function(err,decode){
+                if (err){return res.status(401).send({message:"Token tidak valid"})}
+                else {
+                    req.token = decode;
+                    next();
+                }
+            });
+        } else {
+            return res.status(401).send({message:"Tidak ada token yang dikirim"})
+        }
+    }
+}
+
 exports.exportToken = async function(data){
     return await new Promise(function (resolve, reject) {
         try {
