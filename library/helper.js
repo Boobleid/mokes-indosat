@@ -1,4 +1,18 @@
 let bcrypt = require("bcryptjs");
+let JWT = require("jsonwebtoken");
+let appConfig = require("../config/app");
+
+exports.exportToken = async function(data){
+    return await new Promise(function (resolve, reject) {
+        try {
+            let dJwt = JWT.sign(data, appConfig.jwtSecret);
+            resolve(dJwt);
+        } catch (error) {
+            console.log(error.message);
+            resolve(false)
+        }
+    });
+}
 
 exports.reverseString = function(str) {
     var splitString = str.split("");
@@ -7,7 +21,15 @@ exports.reverseString = function(str) {
     return joinArray;
 }
 
-
+exports.randomNumber = function (length) {
+    var result = '';
+    var characters = '123456789';
+    var charactersLength = characters.length;
+    for (var i = 0; i < length; i++) {
+       result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+ }
 
 exports.timeSignature = function(x = ''){
     let d;
