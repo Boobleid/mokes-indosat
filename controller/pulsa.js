@@ -6,6 +6,7 @@ const appConfig = require("../config/app");
 var xor = require('base64-xor');
 var request = require("request");
 var JSCRYPTO = require("crypto-js");
+var  xmlParser = require('xml2json');
 
 
 router.post("/get_produk",async function(req,res){
@@ -36,12 +37,12 @@ router.post("/get_operator",async function(req,res){
 });
 
 router.get("/testPulsa",async function(req,res){
-    var hp = "082193864947100";
+    var hp = "082193864947";
     // var time = '191001';
     var userid = 'mp01212';
     var time = helper.timeSignature();
     var last4_digit = hp.slice(-4);
-    var kode_produk = "S10";
+    var kode_produk = "S45";
     var reverse_last4_digit = helper.reverseString(last4_digit);
     var password = "121212";
     var invoice = '100001';
@@ -72,12 +73,16 @@ router.get("/testPulsa",async function(req,res){
            <trxke>${trxke}</trxke>
         </evoucher>`
         }, function (error, response, body) {
-        if (error) {
-            console.log(error);
-        } else {
-            console.log(body);
+            if (error) {
+                console.log(error);
+                console.log("================================")
+            }  
+                var a = xmlParser.toJson(response.body);
+                var d = JSON.parse(a);
+                console.log(d);
+            
         }
-    });
+    );
     return res.json({a,b,data_xor});
 });
 
