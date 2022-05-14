@@ -9,7 +9,7 @@ var JSCRYPTO = require("crypto-js");
 var  xmlParser = require('xml2json');
 
 
-router.post("/get_produk",async function(req,res){
+router.post("/get_produk",helper.cekToken(),async function(req,res){
     const operator = req.body.operator ? req.body.operator : "";
     const jenis = req.body.jenis ? req.body.jenis : "";
     if (operator && jenis){
@@ -23,7 +23,7 @@ router.post("/get_produk",async function(req,res){
 
 
 
-router.post("/get_operator",async function(req,res){
+router.post("/get_operator",helper.cekToken(),async function(req,res){
     const hp = req.body.hp ? req.body.hp : "";
     if (hp == ""){
         res.json({status:false,message:"Harap memasukkan Nomor HP"});
@@ -36,13 +36,54 @@ router.post("/get_operator",async function(req,res){
     }
 });
 
-router.get("/testPulsa",async function(req,res){
+router.get("/cek-saldo",async function(req,res){
     var hp = "082193864947";
     // var time = '191001';
     var userid = 'mp01212';
     var time = helper.timeSignature();
+    var password = "121212";
+
+    var a =  time;
+    var b = password;
+    var data_xor = xor.encode(b,a);
+
+    
+    await request.post({
+        // url: 'http://192.168.1.11:8081/mitacell/h2h/indexwaitsn.php',
+        url: 'http://servermokes.dynns.com:8081/mitacell/h2h/indexwaitsn.php',
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/xml',
+        },
+        
+        body: `<?xml version="1.0" ?>
+        <evoucher>
+           <command>BALANCE</command>
+           <userid>${userid}</userid>
+           <time>${time}</time>
+           <signature> ${data_xor}</signature>
+        </evoucher>`
+        }, function (error, response, body) {
+            if (error) {
+                console.log(error);
+                console.log("================================")
+            }  
+                var a = xmlParser.toJson(response.body);
+                var d = JSON.parse(a);
+                console.log(d);
+            
+        }
+    );
+    return res.json({a,b,data_xor});
+});
+
+router.get("/testPulsa",async function(req,res){
+    var hp = "085397458123";
+    // var time = '191001';
+    var userid = 'mp01212';
+    var time = helper.timeSignature();
     var last4_digit = hp.slice(-4);
-    var kode_produk = "S45";
+    var kode_produk = "S10";
     var reverse_last4_digit = helper.reverseString(last4_digit);
     var password = "121212";
     var invoice = '100001';

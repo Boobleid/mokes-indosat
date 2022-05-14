@@ -11,7 +11,7 @@ router.get("/banner",helper.cekToken(),async function(req,res){
 });
 
 router.get("/saldo",helper.cekToken(),async function(req,res){
-    let id_user = 'anonim';
+    let id_user = req.token.id_user;
     let data = await model.getRowQuery(`
         SELECT a.masuk - b.keluar AS saldo FROM (
             SELECT SUM(jumlah) AS masuk FROM saldo_masuk WHERE id_user = '${id_user}'

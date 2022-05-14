@@ -54,6 +54,7 @@ router.post("/aktifasi-registrasi",async function(req,res){
             message : `berhasil`,
             data : {
                 token,
+                id_user : data_user.id, 
                 nama : data_user.nama,
                 email : data_user.email,
                 nohp : data_user.nohp,
@@ -86,6 +87,7 @@ router.post("/login",async function(req,res){
                     message : `berhasil`,
                     data : {
                         token,
+                        id_user : data_user.id,
                         nama : data_user.nama,
                         email : data_user.email,
                         nohp : data_user.nohp,
