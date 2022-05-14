@@ -20,7 +20,7 @@ router.post("/registrasi",async function(req,res){
         const otp = helper.randomNumber(6);
         await model.simpan_data_tabel('registrasi',{nama,email,nohp,otp},'','ADD','');
         console.log("OTP = "+otp);
-        return res.json({status : true, message : "berhasil", data : {}});
+        return res.json({status : true, message : "kode otp terkirim ("+otp+")", data : {}});
     } else {
         return res.json({status : false, message : "request tidak lengkap", data : {}});
     }
