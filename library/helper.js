@@ -1,6 +1,12 @@
 let bcrypt = require("bcryptjs");
 let JWT = require("jsonwebtoken");
+let X2JS = require("x2js");
 let appConfig = require("../config/app");
+var x2js = new X2JS();
+
+exports.xmlToJson = function(xml) {
+    return x2js.xml2js(xml);
+};
 
 exports.cekToken = ()=>{
     return function(req,res,next){

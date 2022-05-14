@@ -6,7 +6,7 @@ const appConfig = require("../config/app");
 var xor = require('base64-xor');
 var request = require("request");
 var JSCRYPTO = require("crypto-js");
-var  xmlParser = require('xml2json');
+// var  xmlParser = require('xml2json');
 
 
 router.post("/get_produk",helper.cekToken(),async function(req,res){
@@ -68,7 +68,7 @@ router.get("/cek-saldo",async function(req,res){
                 console.log(error);
                 console.log("================================")
             }  
-                var a = xmlParser.toJson(response.body);
+                var a = helper.xmlToJson(response.body);
                 var d = JSON.parse(a);
                 console.log(d);
             
@@ -118,7 +118,7 @@ router.get("/testPulsa",async function(req,res){
                 console.log(error);
                 console.log("================================")
             }  
-                var a = xmlParser.toJson(response.body);
+                var a = helper.xmlToJson(response.body);
                 var d = JSON.parse(a);
                 console.log(d);
             
