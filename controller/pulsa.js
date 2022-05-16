@@ -86,6 +86,9 @@ router.post("/transaksi_pulsa",helper.cekToken(),async function(req,res){
                 url: 'http://servermokes.dynns.com:8081/mitacell/h2h/indexwaitsn.php',
                 method: "POST",
                 headers: {
+                    'Connection': 'keep-alive',
+                    'Accept-Encoding': '',
+                    'Accept-Language': 'en-US,en;q=0.8',
                     'Content-Type': 'application/xml',
                 },
                 body: xml_request
@@ -101,7 +104,7 @@ router.post("/transaksi_pulsa",helper.cekToken(),async function(req,res){
                 }
             );
         } catch(err){
-            console.log('11');
+            console.log('11')
             console.log(err);
             resolve(false);
         }
