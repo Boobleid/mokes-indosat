@@ -54,7 +54,7 @@ router.post("/transaksi_pulsa",helper.cekToken(),async function(req,res){
     }
 
     let hrg_pembelian = data_pembelian.HargaNasional;
-    let nm_produk = data_pembelian.NamaPoduk;
+    let nm_produk = data_pembelian.NamaProduk;
     let penambahanBiaya = 0;
     let tagihan = hrg_pembelian + penambahanBiaya;
     let saldo = saldoUser.saldo;
@@ -122,7 +122,7 @@ router.post("/transaksi_pulsa",helper.cekToken(),async function(req,res){
             await model.simpan_data_tabel("saldo_keluar",{id_user,invoice,jumlah:tagihan,last_user:id_user},"","ADD","");
             return res.json({status:true,message:"Berhasil melakukan Topup"});
         } else {
-            return res.json({status:false,message:"Gagal melakukan Topup"});
+            return res.json({status:false,message:"Gagal melakukan Topup"});    
         }
 
     } else {
