@@ -2,7 +2,33 @@ const mysql = require("mysql");
 const dbConfig = require("../config/database");
 let db = mysql.createConnection(dbConfig);
 
+exports.getTrxke = async function(id_user){
+    var data = await getRowQuery(`SELECT IFNULL(MAX(trxke),0)+1 AS trxke FROM transaksi WHERE id_user = '${id_user}'`);
+    return data.trxke;
+}
+
+exports.getDataPulsaByKode = async function(kode){
+    var data = await getRowQuery(`SELECT * FROM m_harga WHERE Singkatan = '${kode}'`);
+    return data;
+}
+
+exports.getSaldoUser = async function (id_user){
+    var q = `
+        SELECT (a.masuk - b.keluar) AS saldo FROM (
+            SELECT IFNULL(SUM(jumlah),0) AS masuk FROM saldo_masuk WHERE id_user = '${id_user}'
+        )a LEFT JOIN (
+            SELECT IFNULL(SUM(jumlah),0) AS keluar FROM saldo_keluar WHERE id_user = '${id_user}'
+        )b ON 1 = 1
+    `;
+    var data = await getRowQuery(q);
+    return data;
+}
+
 exports.getRowQuery = async function (query) {
+    return await getRowQuery(query);
+}
+
+async function getRowQuery(query) {
     return await new Promise(function (resolve) {
         db.query(query, function (err, rows) {
             if (err) {

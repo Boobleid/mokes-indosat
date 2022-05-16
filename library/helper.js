@@ -8,6 +8,21 @@ exports.xmlToJson = function(xml) {
     return x2js.xml2js(xml);
 };
 
+
+exports.xmlTopupPulsa = (kode_produk,userid,time,hp,invoice,data_xor,trxke)=>{
+    return `<?xml version="1.0" ?>
+    <evoucher>
+       <command>TOPUP</command>
+       <product>${kode_produk}</product>
+       <userid>${userid}</userid>
+       <time>${time}</time>
+       <msisdn>${hp}</msisdn>
+       <partner_trxid>${invoice}</partner_trxid>
+       <signature> ${data_xor}</signature>
+       <trxke>${trxke}</trxke>
+    </evoucher>`;
+}
+
 exports.cekToken = ()=>{
     return function(req,res,next){
         var token = req.headers['x-access-token'];
@@ -164,6 +179,21 @@ exports.skrg = function (x = '') {
     let second = addZero(d.getSeconds());
     return `${thn}-${bulan}-${tgl} ${jam}:${mnt}:${second}`;
  }
+
+exports.generateInvoice = function(){
+    var result = '';
+    var characters = '0123456789';
+    var charactersLength = characters.length;
+    for (var i = 0; i < 4; i++) {
+       result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+
+    d = new Date();
+    let thn = d.getFullYear();
+    let bulan = addZero(d.getMonth() + 1);
+    let tgl = addZero(d.getDate());
+    return thn+bulan+tgl+result;
+}
 
 exports.hari_ini = function (x = '') {
     let d;

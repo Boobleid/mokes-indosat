@@ -43,10 +43,11 @@ router.post("/aktifasi-registrasi",async function(req,res){
         }
 
         var data_mentah_token = {
+            id_user : data_user.id,
             nama : data_user.nama,
             email : data_user.email,
             nohp : data_user.nohp,
-            exp : Math.floor(Date.now() / 1000) + (60 * 60 * 24)
+            // exp : Math.floor(Date.now() / 1000) + (60 * 60 * 24)
         }
         const token = await helper.exportToken(data_mentah_token);
         return res.json({
@@ -76,10 +77,11 @@ router.post("/login",async function(req,res){
             var data_otp = await model.getRowQuery(`SELECT * FROM user_login WHERE id_user = '${data_user.id}' AND otp = '${otp}' `);
             if (data_otp){
                 var data_mentah_token = {
+                    id_user : data_user.id,
                     nama : data_user.nama,
                     email : data_user.email,
                     nohp : data_user.nohp,
-                    exp : Math.floor(Date.now() / 1000) + (60 * 60 * 24)
+                    // exp : Math.floor(Date.now() / 1000) + (60 * 60 * 24)
                 }
                 const token = await helper.exportToken(data_mentah_token);
                 return res.json({

@@ -12,13 +12,7 @@ router.get("/banner",helper.cekToken(),async function(req,res){
 
 router.get("/saldo",helper.cekToken(),async function(req,res){
     let id_user = req.token.id_user;
-    let data = await model.getRowQuery(`
-        SELECT a.masuk - b.keluar AS saldo FROM (
-            SELECT SUM(jumlah) AS masuk FROM saldo_masuk WHERE id_user = '${id_user}'
-        )a LEFT JOIN (
-            SELECT SUM(jumlah) AS keluar FROM saldo_keluar WHERE id_user = '${id_user}'
-        )b ON 1 = 1
-    `);
+    let data = await model.getSaldoUser(id_user);
     res.json({status:true,message:"berhasil",data});
 });
 

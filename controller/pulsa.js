@@ -6,7 +6,6 @@ const appConfig = require("../config/app");
 var xor = require('base64-xor');
 var request = require("request");
 var JSCRYPTO = require("crypto-js");
-// var  xmlParser = require('xml2json');
 
 
 router.post("/get_produk",helper.cekToken(),async function(req,res){
@@ -36,7 +35,81 @@ router.post("/get_operator",helper.cekToken(),async function(req,res){
     }
 });
 
-router.get("/cek-saldo",async function(req,res){
+router.post("/transaksi_pulsa",helper.cekToken(),async function(req,res){
+    const id_user = req.token.id_user;
+    const nohp = req.body.nohp ? req.body.nohp : "";
+    const kode = req.body.kode ? req.body.kode : "";
+    if (nohp == "" && kode == ""){
+        return res.json({status:false,message:"Harap memasukkan Nomor HP atau Kode"});
+    }
+
+    let data_pembelian = await model.getDataPulsaByKode(kode);
+    if (!data_pembelian) {
+        return res.json({status:false,message:"Kode tidak diketahui"}); 
+    }
+
+    let saldoUser = await model.getSaldoUser(id_user);
+    if (!saldoUser){
+        return res.json({status:false,message:"Terjadi keslahan saat mengambil data saldo, coba lagi nanti"});
+    }
+
+    let hrg_pembelian = data_pembelian.HargaNasional;
+    let nm_produk = data_pembelian.NamaPoduk;
+    let penambahanBiaya = 0;
+    let tagihan = hrg_pembelian + penambahanBiaya;
+    let saldo = saldoUser.saldo;
+    
+    console.log(saldoUser);
+
+    if (!(saldo >= tagihan)){
+        return res.json({status:false,message:"Maaf, saldo anda tidak cukup, silahkan lakukan topup terlebiih dahulu"});
+    }
+
+    var trxke = await model.getTrxke(id_user);
+    var time = helper.timeSignature();
+    var last4_digit = nohp.slice(-4);
+    var kode_produk = kode;
+    var reverse_last4_digit = helper.reverseString(last4_digit);
+    var invoice = helper.generateInvoice();
+
+    var a =  time + last4_digit;
+    var b = reverse_last4_digit + appConfig.passMokes;
+    var data_xor = xor.encode(b,a);
+
+    var xml_request = helper.xmlTopupPulsa(kode_produk,appConfig.userMokes,time,nohp,invoice,data_xor,trxke);
+    // return res.json({xml_request});
+    var xml_response = await new Promise(async function(resolve,reject){
+        await request.post({
+            url: 'http://servermokes.dynns.com:8081/mitacell/h2h/indexwaitsn.php',
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/xml',
+            },
+            body: xml_request
+            }, function (error, response, body) {
+                if (error) {
+                    console.log(error);
+                    resolve(false);
+                }
+                console.log(response.body);
+                resolve(response.body);
+                
+            }
+        );
+    });
+    
+    if (xml_response){
+        var json_res_mokes = helper.xmlToJson(xml_response);
+        var obj_res_mokes = JSON.parse(a);
+        console.log(obj_res_mokes);
+    
+        return res.json({invoice});
+    } else {
+        return res.json({status:false,message:"Terjadi kesalahan saat memanggil mokes, coba lagi nanti"});
+    }
+});
+ 
+router.get("testingajsdas",async function(req,res){
     var hp = "082193864947";
     // var time = '191001';
     var userid = 'mp01212';
