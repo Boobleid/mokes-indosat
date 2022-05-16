@@ -19,4 +19,4 @@ var server = app.listen(config.port, () => {
   console.log(`Example app listening at http://${ip.address()}:${config.port}`)
 });
 
-server.timeout = 1000 * 20;
+server.timeout = 1000 * 60;
