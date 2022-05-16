@@ -79,9 +79,9 @@ router.post("/transaksi_pulsa",helper.cekToken(),async function(req,res){
     var xml_request = helper.xmlTopupPulsa(kode_produk,appConfig.userMokes,time,nohp,invoice,data_xor,trxke);
     // return res.json({xml_request});
     console.log(xml_request);
+    try {
     var xml_response = await new Promise(async function(resolve,reject){
         console.log('1')
-        try {
             await request.post({
                 url: 'http://servermokes.dynns.com:8081/mitacell/h2h/indexwaitsn.php',
                 method: "POST",
@@ -104,13 +104,12 @@ router.post("/transaksi_pulsa",helper.cekToken(),async function(req,res){
                     
                 }
             );
-        } catch(err){
-            console.log('11')
-            console.log(err);
-            resolve(false);
-        }
-    });
-
+        });
+    } catch(err){
+        console.log('11')
+        console.log(err);
+    }
+        
     console.log('3');
     
     
