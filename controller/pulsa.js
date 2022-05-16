@@ -81,24 +81,30 @@ router.post("/transaksi_pulsa",helper.cekToken(),async function(req,res){
     console.log(xml_request);
     var xml_response = await new Promise(async function(resolve,reject){
         console.log('1')
-        await request.post({
-            url: 'http://servermokes.dynns.com:8081/mitacell/h2h/indexwaitsn.php',
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/xml',
-            },
-            body: xml_request
-        }, function (error, response, body) {
-                console.log('2')
-                console.log(body);
-                console.log(error);
-                if (error) {
-                    resolve(false);
+        try {
+            await request.post({
+                url: 'http://servermokes.dynns.com:8081/mitacell/h2h/indexwaitsn.php',
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/xml',
+                },
+                body: xml_request
+            }, function (error, response, body) {
+                    console.log('2')
+                    console.log(body);
+                    console.log(error);
+                    if (error) {
+                        resolve(false);
+                    }
+                    resolve(response.body);
+                    
                 }
-                resolve(response.body);
-                
-            }
-        );
+            );
+        } catch(err){
+            console.log('11');
+            console.log(err);
+            resolve(false);
+        }
     });
 
     console.log('3');
@@ -133,7 +139,7 @@ router.post("/transaksi_pulsa",helper.cekToken(),async function(req,res){
         }
         
     } else {
-        console.log('5');
+        console.log('4');
         return res.json({status:false,message:"Terjadi kesalahan saat memanggil mokes, coba lagi nanti"});
     }
 });
