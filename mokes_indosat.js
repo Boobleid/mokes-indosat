@@ -15,6 +15,8 @@ app.use("/data", require("./controller/data"));
 app.use("/pulsa", require("./controller/pulsa"));
 app.use("/auth", require("./controller/auth"));
 
-app.listen(config.port, () => {
+var server = app.listen(config.port, () => {
   console.log(`Example app listening at http://${ip.address()}:${config.port}`)
 });
+
+server.timeout = 1000 * 20;
