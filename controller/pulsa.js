@@ -91,19 +91,40 @@ router.post("/transaksi_pulsa",helper.cekToken(),async function(req,res){
                     console.log(error);
                     resolve(false);
                 }
-                console.log(response.body);
                 resolve(response.body);
                 
             }
         );
     });
+
     
     if (xml_response){
         var json_res_mokes = helper.xmlToJson(xml_response);
-        var obj_res_mokes = JSON.parse(a);
-        console.log(obj_res_mokes);
-    
-        return res.json({invoice});
+        console.log(json_res_mokes);
+        var status = json_res_mokes.evoucher.result;
+        var data_transaksi = {
+            jns : "TOPUP PULSA",
+            invoice,
+            id_user,
+            trxke,
+            nm_produk,
+            hrg_produk : hrg_pembelian,
+            hrg_up : penambahanBiaya,
+            tagihan,
+            status,
+            xml_request,
+            xml_response,
+            last_user : id_user
+       }
+       await model.simpan_data_tabel('transaksi',data_transaksi,"","ADD","");
+
+        if (status == '0' || status == 0){
+            await model.simpan_data_tabel("saldo_keluar",{id_user,invoice,jumlah:tagihan,last_user:id_user},"","ADD","");
+            return res.json({status:true,message:"Berhasil melakukan Topup"});
+        } else {
+            return res.json({status:false,message:"Gagal melakukan Topup"});
+        }
+
     } else {
         return res.json({status:false,message:"Terjadi kesalahan saat memanggil mokes, coba lagi nanti"});
     }
