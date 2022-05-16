@@ -188,7 +188,7 @@ router.get("testingajsdas",async function(req,res){
     return res.json({a,b,data_xor});
 });
 
-router.get("/testPulsa",async function(req,res){
+router.get("/tasdasdestPulsa",async function(req,res){
     var hp = "085397458123";
     // var time = '191001';
     var userid = 'mp01212';
