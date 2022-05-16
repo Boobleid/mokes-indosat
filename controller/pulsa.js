@@ -86,7 +86,7 @@ router.post("/transaksi_pulsa",helper.cekToken(),async function(req,res){
                 'Content-Type': 'application/xml',
             },
             body: xml_request
-        }, function (error, response, body) {
+        }, async function (error, response, body) {
             if (error) {
                 console.log(error);
             }
