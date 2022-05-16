@@ -85,6 +85,7 @@ router.post("/transaksi_pulsa",helper.cekToken(),async function(req,res){
             await request.post({
                 url: 'http://servermokes.dynns.com:8081/mitacell/h2h/indexwaitsn.php',
                 method: "POST",
+                timeout : 1000 * 120,
                 headers: {
                     'Connection': 'keep-alive',
                     'Accept-Encoding': '',
