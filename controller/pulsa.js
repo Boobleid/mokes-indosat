@@ -100,8 +100,8 @@ router.post("/transaksi_pulsa",helper.cekToken(),async function(req,res){
 
     
     if (xml_response){
+        console.log(xml_response);
         var json_res_mokes = helper.xmlToJson(xml_response);
-        console.log(json_res_mokes);
         var status = json_res_mokes.evoucher.result;
         var data_transaksi = {
             jns : "TOPUP PULSA",
