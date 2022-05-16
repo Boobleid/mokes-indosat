@@ -78,7 +78,9 @@ router.post("/transaksi_pulsa",helper.cekToken(),async function(req,res){
 
     var xml_request = helper.xmlTopupPulsa(kode_produk,appConfig.userMokes,time,nohp,invoice,data_xor,trxke);
     // return res.json({xml_request});
+    console.log(xml_request);
     var xml_response = await new Promise(async function(resolve,reject){
+        console.log('1')
         await request.post({
             url: 'http://servermokes.dynns.com:8081/mitacell/h2h/indexwaitsn.php',
             method: "POST",
@@ -86,10 +88,11 @@ router.post("/transaksi_pulsa",helper.cekToken(),async function(req,res){
                 'Content-Type': 'application/xml',
             },
             body: xml_request
-            }, function (error, response, body) {
+        }, function (error, response, body) {
+                console.log('2')
+                console.log(body);
+                console.log(error);
                 if (error) {
-                    console.log(error);
-                    console.log(body);
                     resolve(false);
                 }
                 resolve(response.body);
@@ -98,8 +101,11 @@ router.post("/transaksi_pulsa",helper.cekToken(),async function(req,res){
         );
     });
 
+    console.log('3');
+    
     
     if (xml_response){
+        console.log('4');
         console.log(xml_response);
         var json_res_mokes = helper.xmlToJson(xml_response);
         var status = json_res_mokes.evoucher.result;
@@ -116,17 +122,18 @@ router.post("/transaksi_pulsa",helper.cekToken(),async function(req,res){
             xml_request,
             xml_response,
             last_user : id_user
-       }
-       await model.simpan_data_tabel('transaksi',data_transaksi,"","ADD","");
-
+        }
+        await model.simpan_data_tabel('transaksi',data_transaksi,"","ADD","");
+        
         if (status == '0' || status == 0){
             await model.simpan_data_tabel("saldo_keluar",{id_user,invoice,jumlah:tagihan,last_user:id_user},"","ADD","");
             return res.json({status:true,message:"Berhasil melakukan Topup"});
         } else {
             return res.json({status:false,message:"Gagal melakukan Topup"});    
         }
-
+        
     } else {
+        console.log('5');
         return res.json({status:false,message:"Terjadi kesalahan saat memanggil mokes, coba lagi nanti"});
     }
 });
