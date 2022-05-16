@@ -97,6 +97,8 @@ router.post("/transaksi_pulsa",helper.cekToken(),async function(req,res){
         );
     });
 
+    return res.json({xml_response});
+
     
     if (xml_response){
         var json_res_mokes = helper.xmlToJson(xml_response);
