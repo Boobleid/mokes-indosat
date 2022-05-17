@@ -38,7 +38,8 @@ router.post("/get_operator",helper.cekToken(),async function(req,res){
 router.post("/transaksi_pulsa",helper.cekToken(),async function(req,res){
     const id_user = req.token.id_user;
     const nohp = req.body.nohp ? req.body.nohp : "";
-    const kode = req.body.kode ? req.body.kode : "";
+    // const kode = req.body.kode ? req.body.kode : "";
+    const kode = "T1";
     if (nohp == "" && kode == ""){
         return res.json({status:false,message:"Harap memasukkan Nomor HP atau Kode"});
     }
