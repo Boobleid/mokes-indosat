@@ -38,8 +38,8 @@ router.post("/get_operator",helper.cekToken(),async function(req,res){
 router.post("/transaksi_pulsa",helper.cekToken(),async function(req,res){
     const id_user = req.token.id_user;
     const nohp = req.body.nohp ? req.body.nohp : "";
-    // const kode = req.body.kode ? req.body.kode : "";
-    const kode = "T1";
+    const kode = req.body.kode ? req.body.kode : "";
+    // const kode = "T1";
     if (nohp == "" && kode == ""){
         return res.json({status:false,message:"Harap memasukkan Nomor HP atau Kode"});
     }
@@ -160,33 +160,40 @@ router.get("/testingajsdas",async function(req,res){
     var b = password;
     var data_xor = xor.encode(b,a);
 
-    
-    await request.post({
-        // url: 'http://192.168.1.11:8081/mitacell/h2h/indexwaitsn.php',
-        url: 'http://servermokes.dynns.com:8081/mitacell/h2h/indexwaitsn.php',
-        method: "POST",
-        headers: {
-            'Content-Type': 'application/xml',
-        },
-        
-        body: `<?xml version="1.0" ?>
-        <evoucher>
-           <command>BALANCE</command>
-           <userid>${userid}</userid>
-           <time>${time}</time>
-           <signature> ${data_xor}</signature>
-        </evoucher>`
-        }, function (error, response, body) {
-            if (error) {
-                console.log(error);
-                console.log("================================")
-            }  
-                var a = helper.xmlToJson(response.body);
-                var d = JSON.parse(a);
-                console.log(d);
+
+    try {
+        await request.post({
+            // url: 'http://192.168.1.11:8081/mitacell/h2h/indexwaitsn.php',
+            url: 'http://servermokes.dynns.com:8081/mitacell/h2h/indexwaitsn.php',
+            method: "POST",
+            headers: {
+                'Connection': 'keep-alive',
+                'Accept-Encoding': '',
+                'Accept-Language': 'en-US,en;q=0.8',
+                'Content-Type': 'application/xml',
+            },
             
-        }
-    );
+            body: `<?xml version="1.0" ?>
+            <evoucher>
+               <command>BALANCE</command>
+               <userid>${userid}</userid>
+               <time>${time}</time>
+               <signature> ${data_xor}</signature>
+            </evoucher>`
+            }, function (error, response, body) {
+                if (error) {
+                    console.log(error);
+                    console.log("================================")
+                }  
+                    var a = helper.xmlToJson(body);
+                    // var d = JSON.parse(a);
+                    console.log(a);
+                
+            }
+        );
+    } catch(err){
+        console.log(err);
+    }
     return res.json({a,b,data_xor});
 });
 
@@ -196,7 +203,7 @@ router.get("/tasdasdestPulsa",async function(req,res){
     var userid = 'mp01212';
     var time = helper.timeSignature();
     var last4_digit = hp.slice(-4);
-    var kode_produk = "S10";
+    var kode_produk = "T1";
     var reverse_last4_digit = helper.reverseString(last4_digit);
     var password = "121212";
     var invoice = '100001';
@@ -205,6 +212,19 @@ router.get("/tasdasdestPulsa",async function(req,res){
     var a =  time + last4_digit;
     var b = reverse_last4_digit + password;
     var data_xor = xor.encode(b,a);
+
+    console.log(`<?xml version="1.0" ?>
+    <evoucher>
+       <command>TOPUP</command>
+       <product>${kode_produk}</product>
+       <userid>${userid}</userid>
+       <time>${time}</time>
+       <msisdn>${hp}</msisdn>
+       <partner_trxid>${invoice}</partner_trxid>
+       <signature> ${data_xor}</signature>
+       <trxke>${trxke}</trxke>
+    </evoucher>`);
+    return false;
 
     
     await request.post({
@@ -232,7 +252,6 @@ router.get("/tasdasdestPulsa",async function(req,res){
                 console.log("================================")
             }  
                 var a = helper.xmlToJson(response.body);
-                var d = JSON.parse(a);
                 console.log(d);
             
         }
