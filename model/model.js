@@ -25,7 +25,22 @@ exports.getSaldoUser = async function (id_user){
 }
 
 exports.getRowQuery = async function (query) {
-    return await getRowQuery(query);
+    return await new Promise(function (resolve) {
+        db.query(query, function (err, rows) {
+            if (err) {
+                console.log(err);
+                console.log(query);
+                console.log("======================== GET ROW");
+                resolve(false);
+            } else {
+                if (rows.length > 0){
+                    resolve(rows[0]);
+                } else {
+                    resolve(false);
+                }
+            }
+        });
+    });
 }
 
 async function getRowQuery(query) {
