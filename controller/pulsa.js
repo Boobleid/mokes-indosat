@@ -149,7 +149,7 @@ router.post("/transaksi_pulsa",helper.cekToken(),async function(req,res){
     }
 });
  
-router.get("testingajsdas",async function(req,res){
+router.get("/testingajsdas",async function(req,res){
     var hp = "082193864947";
     // var time = '191001';
     var userid = 'mp01212';
