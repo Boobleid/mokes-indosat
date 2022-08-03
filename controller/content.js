@@ -82,7 +82,26 @@ router.post('/search_produk_fisik', helper.cekToken(), async function(req, res){
         })
     }
 })
- 
+
+router.get('/load_kategori_fisik', helper.cekToken(), async function(req, res){
+    var data = await model.getRowsQuery(`SELECT * FROM produk_fisik_kategori`);
+
+    if(data=="" || data == false){
+        res.json({
+            status: false,
+            message: "Tidak ada yang cocok"
+        })
+    }else{
+        res.json({
+            status: true,
+            message: "Berhasil",
+            data
+        })
+    }
+}) 
+
+
+
 
 router.get('/load_provider', helper.cekToken(), async function(req, res){
     var data = await model.getRowsQuery(`SELECT id, nama_menu, banner FROM tbl_provider_produk`);
@@ -255,7 +274,7 @@ router.post('/transaksi_penjualan', helper.cekToken(), async function(req, res){
     await model.simpan_data_tabel(`${table}`,detail_penjualan, "", "ADD", "" );
 
 
-    await model.getRowQuery(`DELETE FROM ${tableKeranjang} WHERE id ='${detail_penjualan[i].id}' `);
+    await model.getRowQuery(`DELETE FROM ${tableKeranjang} WHERE id ='${data_keranjang[i].id}' `);
 
     
     }   
