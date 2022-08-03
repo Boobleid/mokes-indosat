@@ -14,6 +14,7 @@ app.use(express.json());
 app.use("/data", require("./controller/data"));
 app.use("/pulsa", require("./controller/pulsa"));
 app.use("/auth", require("./controller/auth"));
+app.use("/content", require("./controller/content"));
 
 app.listen(config.port, () => {
   console.log(`Example app listening at http://${ip.address()}:${config.port}`)
